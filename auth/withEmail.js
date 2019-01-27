@@ -1,4 +1,4 @@
-import { fireapp } from '../config/fireBase';
+import { fireapp } from '../config/firebase';
 
 export const signIn = (email, password) =>
   new Promise((resolve, reject) =>
@@ -13,13 +13,3 @@ export const signOut = () =>
       .then(() => resolve('Sign-out successful'))
       .catch(err => reject(err))
   );
-
-  /*
-export const onAuthStateChanged = () => {
-  fireapp.auth().onAuthStateChanged(user => {
-    if (user != null) {
-      this.user = user;
-      console.warn(this.user);
-    }
-  });
-}*/
