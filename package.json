@@ -14,6 +14,7 @@
     "react-native-firebase": "^5.2.1",
     "react-redux": "^6.0.0",
     "react-redux-firebase": "^3.0.0-alpha.6",
+    "recompose": "^0.30.0",
     "redux": "^4.0.1",
     "redux-firestore": "^0.6.3"
   },

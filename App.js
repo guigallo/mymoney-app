@@ -1,49 +1,28 @@
 import React from 'react';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import ReduxProvider from './data/redux';
-import { StyleSheet, Text, View } from 'react-native';
-import { signIn } from './auth/withEmail';
-import { fireapp } from './config/firebase';
-import Index from './screens/Index';
+import Dashboard from './screens/Dashboard';
+import SignIn from './screens/SignIn';
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
+const ennhanceAuth = ({firebase, auth}) => 
+  auth.hasOwnProperty('uid')
+    ? <Dashboard/>
+    : <SignIn/>
 
-    this.state = {
-      user: null
-    }
+const Auth = compose(
+  firebaseConnect(),
+  connect(({ firebase: { auth } }) => ({ auth }))
+)(ennhanceAuth)
 
-    fireapp.auth().onAuthStateChanged(user => {
-      if (user != null) {
-        const {email, uid} = user;
-        this.setState({ user: { email, uid } });
-
-        //save(this.state.user, 'categories', { name: 'categoria 5'}).then(result => console.log(result));
-        //getAll(this.state.user, 'categories').then(result => console.log(result));
-        //getById('categories', 'Transporte').then(result => console.log(result));
-        //save(this.state.user, 'categories', { name: 'categoria 99'}, 'YKtCCoGbmCIYUYzIxXM8').then(result => console.log(result));
-        //deleteById('categories', 'gLbTyla97o7XzjRHDyIU').then(result => console.log(result));
-      }
-    });
-
-    signIn('guilherme.gg1@hotmail.com', '123456');
-  }
-
-  render() {
-    return (
-      <ReduxProvider>
-        <View style={styles.container}>
-          {this.state.user !== null && (
-            <>
-              <Text>{this.state.user.email}</Text>
-              <Text>{this.state.user.uid}</Text>
-              <Index/>
-            </>
-          )}
-        </View>
-      </ReduxProvider>
-    );
-  }
+export default PureApp = () =>  {
+  return <ReduxProvider>
+    <View style={styles.container}>
+      <Auth />
+    </View>
+  </ReduxProvider>
 }
 
 const styles = StyleSheet.create({

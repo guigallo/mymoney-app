@@ -1,10 +1,9 @@
 import React from 'react'
 import { createStore, combineReducers, compose } from 'redux'
 import { Provider } from 'react-redux'
-//import { ReactReduxFirebaseProvider, firebaseReducer } from 'react-redux-firebase'
-import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
-import { createFirestoreInstance, firestoreReducer, reduxFirestore } from 'redux-firestore';
 import { fireapp } from '../config/firebase'
+import { ReactReduxFirebaseProvider, firebaseReducer, reactReduxFirebase } from 'react-redux-firebase'
+import { createFirestoreInstance, firestoreReducer, reduxFirestore } from 'redux-firestore'
 
 // react-redux-firebase config
 const rrfConfig = {
@@ -14,17 +13,18 @@ const rrfConfig = {
 
 // Add firebase and firestor to reducers
 const rootReducer = combineReducers({
-  //firebase: firebaseReducer,
+  firebase: firebaseReducer,
   firestore: firestoreReducer
 });
 
-// Create stor  s and initial state
+// Create store with reducers and initial state
 const initialState = {};
 export const store = createStore(
   rootReducer,
   initialState,
-  compose(
-    reduxFirestore(fireapp))
+  //compose(
+    //reduxFirestore(fireapp)),
+    //reactReduxFirebase(fireapp, rrfConfig),
 );
 
 export const rrfProps = {
