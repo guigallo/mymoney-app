@@ -41,3 +41,13 @@ export const getById = (collection, id) => firestore
   .get()
   .then(doc => ({ id: doc.id, ...doc.data() }))
   .catch(err => console.log(err));
+
+/**
+ * Delete by id
+ */
+export const deleteById = (collection, id) => firestore
+  .collection(collection)
+  .doc(id)
+  .delete()
+  .then(() => 'Deleted with success')
+  .catch(err => console.log(err));
