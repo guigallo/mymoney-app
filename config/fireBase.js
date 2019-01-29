@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
-var config = {
+export const firebaseConfig = {
   apiKey: "AIzaSyD6TbeJE3SLuQpdkJrze6KgMy2yQswhqiE",
   authDomain: "mymoney-29eaf.firebaseapp.com",
   projectId: "mymoney-29eaf",
@@ -11,4 +11,4 @@ var config = {
   messagingSenderId: "954524697821"
 };
 
-export const fireapp = firebase.initializeApp(config);
+export const fireapp = firebase.initializeApp(firebaseConfig);

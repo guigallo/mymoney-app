@@ -1,6 +1,6 @@
-import { fireapp } from '../config/firebase';
+import { fireapp as firebase } from '../config/firebase'
 
-export const firestore = fireapp.firestore();
+export const firestore = firebase.firestore();
 firestore.settings({});
 
 /**

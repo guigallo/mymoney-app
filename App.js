@@ -6,13 +6,14 @@ import { connect } from 'react-redux'
 import ReduxProvider from './data/redux';
 import Dashboard from './screens/Dashboard';
 import SignIn from './screens/SignIn';
+import Categories from './screens/Categories';
 
-const ennhanceAuth = ({firebase, auth}) => 
+const ennhanceAuth = ({firebase, auth}) =>
   auth.hasOwnProperty('uid')
-    ? <Dashboard/>
+    ? <Categories/>
     : <SignIn/>
 
-const Auth = compose(
+const App = compose(
   firebaseConnect(),
   connect(({ firebase: { auth } }) => ({ auth }))
 )(ennhanceAuth)
@@ -20,7 +21,7 @@ const Auth = compose(
 export default PureApp = () =>  {
   return <ReduxProvider>
     <View style={styles.container}>
-      <Auth />
+      <App />
     </View>
   </ReduxProvider>
 }

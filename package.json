@@ -16,7 +16,8 @@
     "react-redux-firebase": "^3.0.0-alpha.6",
     "recompose": "^0.30.0",
     "redux": "^4.0.1",
-    "redux-firestore": "^0.6.3"
+    "redux-firestore": "^0.6.3",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0"
