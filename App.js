@@ -20,7 +20,7 @@ const App = compose(
 
 export default PureApp = () =>  {
   return <ReduxProvider>
-    <View style={styles.container}>
+    <View> 
       <App />
     </View>
   </ReduxProvider>
@@ -34,3 +34,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+//style={styles.container}>
