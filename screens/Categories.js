@@ -1,4 +1,5 @@
 import React from 'react'
+import { withNavigation } from "react-navigation";
 import { StyleSheet, Text, View, FlatList, Animated } from 'react-native'
 import { List, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -56,6 +57,7 @@ separator = () => (
 )
 
 export default compose(
+  withNavigation,
   withState('search', 'setSearch', ''),
   connect(({ firebase: { auth } }) => ({ auth })),
   firestoreConnect(({ auth, search }) => {

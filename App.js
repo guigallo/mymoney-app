@@ -1,26 +1,41 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { createStackNavigator, createAppContainer, createSwitchNavigator, withNavigation } from "react-navigation";
+import { StyleSheet, Text, View, Button, Platform, StatusBar } from 'react-native';
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import ReduxProvider from './data/redux';
-import Dashboard from './screens/Dashboard';
 import SignIn from './screens/SignIn';
-import Categories from './screens/Categories';
+import AuthLoadingScreen from './screens/AuthLoadingScreen'
+import AuthStack from './navigation/AuthStack'
+import AppStack from './navigation/AppStack'
 
+
+
+/*
 const ennhanceAuth = ({firebase, auth}) =>
   auth.hasOwnProperty('uid')
-    ? <Categories/>
-    : <SignIn/>
+    ? <AppStack />
+    : <SignIn />
 
 const App = compose(
   firebaseConnect(),
   connect(({ firebase: { auth } }) => ({ auth }))
 )(ennhanceAuth)
+*/
+
+const App = createAppContainer(createSwitchNavigator({
+    AuthLoading: AuthLoadingScreen,
+    App: AppStack,
+    Auth: AuthStack,
+  },{
+    initialRouteName: 'AuthLoading',
+  }
+))
 
 export default PureApp = () =>  {
   return <ReduxProvider>
-    <View> 
+    <View style={styles.container}> 
       <App />
     </View>
   </ReduxProvider>
@@ -28,10 +43,7 @@ export default PureApp = () =>  {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 20,
   },
 });
 //style={styles.container}>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { withNavigation } from "react-navigation";
 import { View, Button } from 'react-native'
 import { signOut } from '../auth/withEmail'
 
@@ -14,4 +15,4 @@ const Dashboard = () => {
   </View>
 }
 
-export default Dashboard
+export default withNavigation(Dashboard)
