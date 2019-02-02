@@ -31,7 +31,7 @@ const App = createAppContainer(createSwitchNavigator({
     App: AppStack,
     Auth: AuthStack,
   },{
-    initialRouteName: 'AuthLoading',
+    //initialRouteName: 'AuthLoading',
   }
 ))
 
@@ -46,7 +46,7 @@ export default PureApp = () =>  {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
+    //paddingTop: Constants.statusBarHeight,
   },
 });
 //style={styles.container}>
