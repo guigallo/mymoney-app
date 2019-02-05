@@ -6,32 +6,14 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import ReduxProvider from './data/redux';
 import SignIn from './screens/SignIn';
-import AuthLoadingScreen from './screens/AuthLoadingScreen'
+import LoadScreen from './screens/LoadScreen'
 import AuthStack from './navigation/AuthStack'
 import AppStack from './navigation/AppStack'
-import { Constants } from 'expo'
-
-
-/*
-const AppNav = createAppContainer(AppStack);
-
-const ennhanceAuth = ({firebase, auth}) =>
-  auth.hasOwnProperty('uid')
-    ? <AppNav />
-    : <SignIn />
-
-const App = compose(
-  firebaseConnect(),
-  connect(({ firebase: { auth } }) => ({ auth }))
-)(ennhanceAuth)*/
-
 
 const App = createAppContainer(createSwitchNavigator({
-    AuthLoading: AuthLoadingScreen,
+    LoadScreen: LoadScreen,
     App: AppStack,
     Auth: AuthStack,
-  },{
-    //initialRouteName: 'AuthLoading',
   }
 ))
 
@@ -49,4 +31,3 @@ const styles = StyleSheet.create({
     //paddingTop: Constants.statusBarHeight,
   },
 });
-//style={styles.container}>
