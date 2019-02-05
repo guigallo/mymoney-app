@@ -15,4 +15,8 @@ const Dashboard = () => {
   </View>
 }
 
+Dashboard.navigationOptions = {
+  title: 'Teste',
+};
+
 export default withNavigation(Dashboard)
