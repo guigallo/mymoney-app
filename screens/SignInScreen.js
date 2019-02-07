@@ -1,47 +1,91 @@
 import React from 'react'
-import {View, Button} from 'react-native'
+import { withNavigation } from 'react-navigation'
+import { StyleSheet, AsyncStorage } from 'react-native'
+import {
+  Container, Header, Content, Form, Item, Input, Label, Icon, Button, Text, Card, CardItem, Body, Drawer,
+} from 'native-base';
+import { signIn } from '../auth/withEmail'
+import { compose, withProps, withState, withHandlers, hoistStatics } from 'recompose'
 
-export default class SignInScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Please sign in',
-  };
+const SignIn = ({email, password, onPressSignIn, setEmail, setPassword}) => {
+  return <Drawer
+    ref={(ref) => { this.drawer = ref; }}
+    content={<SideBar navigator={this.navigator} />}
+    onClose={() => this.closeDrawer()}
+  >
+    <Container style={styles.container}>
+      <Content padder>
+        <Form>
+          <Item floatingLabel>
+            <Icon active type='MaterialIcons' name='email' />
+            <Label>Username</Label>
+            <Input
+              autoFocus
+              autoCapitalize='none'
+              textContentType='emailAddress'
+              returnKeyType='next'
+              autoComplete='email'
+              keyboardType='email-address'
 
-  render() {
-    return (
-      <View /*style={styles.container}*/>
-        <Button title="Sign in!" onPress={this._signInAsync} />
-      </View>
-    );
-  }
+              onSubmitEditing={() => this.passwordInput._root.focus()}
+              onChangeText={value => setEmail(value)}
+            />
+          </Item>
 
-  _signInAsync = async () => {
-    await AsyncStorage.setItem('userToken', 'abc');
-    this.props.navigation.navigate('App');
-  };
+          <Item floatingLabel last>
+            <Icon active type='MaterialIcons' name='lock' />
+            <Label>Password</Label>
+            <Input
+              getRef={(input) => this.passwordInput = input}
+              autoCapitalize='none'
+              textContentType='password'
+              returnKeyType='go'
+              secureTextEntry={true}
+
+              onSubmitEditing={onPressSignIn}
+              onChangeText={value => setPassword(value)}
+            />
+          </Item>
+
+          <Button block onPress={onPressSignIn} style={styles.button} >
+            <Text>SignIn</Text>
+          </Button>
+        </Form>
+      </Content>
+    </Container>
+  </Drawer>
 }
 
-class HomeScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Welcome to the app!',
-  };
-
-  render() {
-    return (
-      <View /*style={styles.container}*/>
-        <Button title="Show me more of the app" onPress={this._showMoreApp} />
-        <Button title="Actually, sign me out :)" onPress={this._signOutAsync} />
-      </View>
-    );
-  }
-
-  _showMoreApp = () => {
-    this.props.navigation.navigate('Other');
-  };
-
-  _signOutAsync = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');
-  };
+SignIn.navigationOptions = {
+  title: 'Login'
 }
 
-// More code like OtherScreen omitted for brevity
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  button: {
+    marginTop: 15,
+  }
+})
+
+export default hoistStatics(compose(
+  withNavigation,
+  withState('email', 'setEmail', ''),
+  withState('password', 'setPassword', ''),
+  withHandlers({
+    onPressSignIn: ({navigation, email, password}) => () => {
+      signIn(email, password)
+        .then(async result => {
+          await AsyncStorage.setItem('authUser', JSON.stringify(result.user))
+          navigation.navigate('Dashboard')
+        })
+        .catch(err => console.warn(err))
+
+        //[Error: The email address is badly formatted.]
+        //[Error: There is no user record corresponding to this identifier. The user may have been deleted.]
+        //[Error: The password is invalid or the user does not have a password.]
+      console.log('submit')
+    }
+  })
+))(SignIn)

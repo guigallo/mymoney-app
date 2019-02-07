@@ -5,7 +5,6 @@ import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import ReduxProvider from './data/redux';
-import SignIn from './screens/SignIn';
 import LoadScreen from './screens/LoadScreen'
 import AuthStack from './navigation/AuthStack'
 import AppStack from './navigation/AppStack'

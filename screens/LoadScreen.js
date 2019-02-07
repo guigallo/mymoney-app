@@ -8,9 +8,9 @@ const cacheResourcesAsync = async (navigation) => {
     Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf")
   })
 
-  const userToken = await AsyncStorage.getItem('userToken')
-  console.log('userToken => ', userToken)
-  navigation.navigate(userToken ? 'App' : 'Auth')
+  navigation.navigate(
+    await AsyncStorage.getItem('authUser')
+    ? 'App' : 'Auth')
 }
 
 export default LoadScreen = ({ navigation, setIsReady }) =>
