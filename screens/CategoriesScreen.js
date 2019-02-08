@@ -1,7 +1,10 @@
 import React from 'react'
+import {
+  Container, Body, Content, Button, Card, CardItem, Text
+} from 'native-base'
+import Header from '../components/layout/Header'
+import { signOut } from '../auth/withEmail'
 import { withNavigation } from "react-navigation";
-import { StyleSheet, Text, View, FlatList, Animated } from 'react-native'
-import { List, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { firestoreConnect, populate, isLoaded, isEmpty, withFirestore, firebaseConnect } from 'react-redux-firebase'
 import {
@@ -12,7 +15,53 @@ import {
   getContext,
   withState
 } from 'recompose'
- 
+
+CategoriesScreen = () => {
+  return <Container>
+  <Header title={'Categories'} />
+
+  <Content padder>
+    <Card>
+      <CardItem>
+      </CardItem>
+    </Card>
+
+  </Content>
+</Container>
+}
+
+export default compose(
+  withNavigation,
+  withState('search', 'setSearch', ''),
+  connect(({ firebase: { auth } }) => ({ auth })),
+  firestoreConnect(({ auth, search }) => {
+    const query = [['author_id', '==', auth.uid]];
+    search === '' ? null : query.push(['name', '==', search])
+
+    return [{
+      collection: 'categories',
+      where: query,
+      //orderBy: ['name', 'asc'],
+      storeAs: 'allCategories',
+    }]
+  }),
+  connect(({ firestore }) => ({ categories: firestore.data.allCategories })),
+)(CategoriesScreen)
+
+/*
+import React from 'react'
+import { withNavigation } from "react-navigation";
+import { StyleSheet, Text, View, FlatList, Animated } from 'react-native'
+import { connect } from 'react-redux'
+import { firestoreConnect, populate, isLoaded, isEmpty, withFirestore, firebaseConnect } from 'react-redux-firebase'
+import {
+  compose,
+  withHandlers,
+  lifecycle,
+  withContext,
+  getContext,
+  withState
+} from 'recompose'
 const CategoriesScreen = ({categories, search, setSearch}) => {
   const categoriesList = []
   let message = ''
@@ -34,16 +83,12 @@ const CategoriesScreen = ({categories, search, setSearch}) => {
         ItemSeparatorComponent={separator}
 
         renderItem={({item}) => (
-          <ListItem
-            title={ item.name }
-            containerStyle={{ borderBottomWidth: 0 }}
-          />
+          <Text>{ item.name }</Text>
         )}
       />
     </View>
 }
 
-header = () => <SearchBar placeholder="Type Here..." lightTheme round/>
 
 separator = () => (
   <View
@@ -72,4 +117,4 @@ export default compose(
     }]
   }),
   connect(({ firestore }) => ({ categories: firestore.data.allCategories })),
-)(CategoriesScreen)
+)(CategoriesScreen)*/

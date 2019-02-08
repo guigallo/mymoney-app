@@ -1,21 +1,40 @@
 import React from 'react'
 import { AsyncStorage } from 'react-native'
+import { compose, withState, lifecycle } from 'recompose'
+import { withNavigation } from 'react-navigation'
+import { Font } from 'expo'
+import { View, Text } from 'react-native';
 
-const cacheResourcesAsync = async (navigation) => {
-  await Expo.Font.loadAsync({
+loadFonts = new Promise(async resolve => {
+  await Font.loadAsync({
     Roboto: require("native-base/Fonts/Roboto.ttf"),
     Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
     Ionicons: require("@expo/vector-icons/fonts/Ionicons.ttf")
   })
 
-  navigation.navigate(
-    await AsyncStorage.getItem('authUser')
-    ? 'App' : 'Auth')
-}
+  resolve('font loaded')
+})
 
-export default LoadScreen = ({ navigation, setIsReady }) =>
-  <Expo.AppLoading
-    startAsync={() => cacheResourcesAsync(navigation)}
-    onFinish={() => setIsReady(true)}
-    onError={console.warn}
-  />
+loadUser = new Promise(resolve => 
+  AsyncStorage.getItem('authUser').then(user => resolve(user)) )
+
+const LoadScreen = () =>
+  <View style={{
+    flex:1, justifyContent: 'center', alignItems: 'center'}
+  }>
+    <Text>Loading</Text>
+  </View>
+
+export default compose(
+  withNavigation,
+  lifecycle({
+    async componentWillMount() {
+      const { navigation } = this.props
+      Promise.all([loadFonts, loadUser])
+        .then(result => (result[1] ? true : false)
+          ? navigation.navigate('Home')
+          : navigation.navigate('SignIn')
+        )
+    }
+  })
+)(LoadScreen)

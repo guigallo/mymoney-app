@@ -1,32 +1,12 @@
-import React from 'react';
-import { createAppNavigator, createStackNavigator, SafeAreaView, createAppContainer, createSwitchNavigator, withNavigation } from "react-navigation";
-import { StyleSheet, Text, View, Button, Platform, StatusBar } from 'react-native';
-import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import ReduxProvider from './data/redux';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import LoadScreen from './screens/LoadScreen'
-import AuthStack from './navigation/AuthStack'
-import AppStack from './navigation/AppStack'
+import AuthStack from './routes/AuthStack'
+import HomeScreenRoutes from './routes/HomeScreenRoutes'
 
-const App = createAppContainer(createSwitchNavigator({
-    LoadScreen: LoadScreen,
-    App: AppStack,
+export default createAppContainer(
+  createSwitchNavigator({
+    Load: LoadScreen,
     Auth: AuthStack,
-  }
-))
-
-export default PureApp = () =>  {
-  return <ReduxProvider>
-    <View style={styles.container}> 
-      <App />
-    </View>
-  </ReduxProvider>
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //paddingTop: Constants.statusBarHeight,
-  },
-});
+    Home: HomeScreenRoutes,
+  })
+)
