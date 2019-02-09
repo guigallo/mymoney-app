@@ -1,7 +1,11 @@
 import React from 'react'
+import { FlatList, Animated } from 'react-native'
+import {
+  Container, Body, Content, Button, Card, CardItem, Text, List, ListItem
+} from 'native-base'
+import Header from '../components/layout/Header'
+import { signOut } from '../auth/withEmail'
 import { withNavigation } from "react-navigation";
-import { StyleSheet, Text, View, FlatList, Animated } from 'react-native'
-import { List, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { firestoreConnect, populate, isLoaded, isEmpty, withFirestore, firebaseConnect } from 'react-redux-firebase'
 import {
@@ -12,7 +16,8 @@ import {
   getContext,
   withState
 } from 'recompose'
- 
+import withCategories from '../hooks/withCategories';
+
 const CategoriesScreen = ({categories, search, setSearch}) => {
   const categoriesList = []
   let message = ''
@@ -23,38 +28,25 @@ const CategoriesScreen = ({categories, search, setSearch}) => {
       : Object.keys(categories).map(
           key => categoriesList.push({ ...categories[key], key}) )
 
-  return (!isLoaded(categories) || isEmpty(categories)) 
-    ? <Text>{message}</Text>
-    : <View>
-      <Animated.FlatList
-        data={categoriesList}
-        keyExtractor={item => item.key}
+  return <Container>
+    <Header title={'Categories'} />
 
-        ListHeaderComponent={header}
-        ItemSeparatorComponent={separator}
-
-        renderItem={({item}) => (
-          <ListItem
-            title={ item.name }
-            containerStyle={{ borderBottomWidth: 0 }}
-          />
-        )}
-      />
-    </View>
+    <Content>
+      {(!isLoaded(categories) || isEmpty(categories)) 
+        ? <Text>{message}</Text>
+        : <Animated.FlatList
+          data={categoriesList}
+          keyExtractor={item => item.key}
+          renderItem={({item}) => (
+            <ListItem>
+              <Text>{ item.name }</Text>
+            </ListItem>
+          )}
+        />
+      }
+    </Content>
+  </Container>
 }
-
-header = () => <SearchBar placeholder="Type Here..." lightTheme round/>
-
-separator = () => (
-  <View
-    style={{
-      height: 1,
-      width: "94%",
-      backgroundColor: "#CED0CE",
-      marginLeft: "3%"
-    }}
-  />
-)
 
 export default compose(
   withNavigation,

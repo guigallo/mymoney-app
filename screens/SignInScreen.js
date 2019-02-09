@@ -8,56 +8,46 @@ import { signIn } from '../auth/withEmail'
 import { compose, withProps, withState, withHandlers, hoistStatics } from 'recompose'
 
 const SignIn = ({email, password, onPressSignIn, setEmail, setPassword}) => {
-  return <Drawer
-    ref={(ref) => { this.drawer = ref; }}
-    content={<SideBar navigator={this.navigator} />}
-    onClose={() => this.closeDrawer()}
-  >
-    <Container style={styles.container}>
-      <Content padder>
-        <Form>
-          <Item floatingLabel>
-            <Icon active type='MaterialIcons' name='email' />
-            <Label>Username</Label>
-            <Input
-              autoFocus
-              autoCapitalize='none'
-              textContentType='emailAddress'
-              returnKeyType='next'
-              autoComplete='email'
-              keyboardType='email-address'
+  return <Container style={styles.container}>
+    <Content padder>
+      <Form>
+        <Item floatingLabel>
+          <Icon active type='MaterialIcons' name='email' />
+          <Label>Username</Label>
+          <Input
+            autoFocus
+            autoCapitalize='none'
+            textContentType='emailAddress'
+            returnKeyType='next'
+            autoComplete='email'
+            keyboardType='email-address'
 
-              onSubmitEditing={() => this.passwordInput._root.focus()}
-              onChangeText={value => setEmail(value)}
-            />
-          </Item>
+            onSubmitEditing={() => this.passwordInput._root.focus()}
+            onChangeText={value => setEmail(value)}
+          />
+        </Item>
 
-          <Item floatingLabel last>
-            <Icon active type='MaterialIcons' name='lock' />
-            <Label>Password</Label>
-            <Input
-              getRef={(input) => this.passwordInput = input}
-              autoCapitalize='none'
-              textContentType='password'
-              returnKeyType='go'
-              secureTextEntry={true}
+        <Item floatingLabel last>
+          <Icon active type='MaterialIcons' name='lock' />
+          <Label>Password</Label>
+          <Input
+            getRef={(input) => this.passwordInput = input}
+            autoCapitalize='none'
+            textContentType='password'
+            returnKeyType='go'
+            secureTextEntry={true}
 
-              onSubmitEditing={onPressSignIn}
-              onChangeText={value => setPassword(value)}
-            />
-          </Item>
+            onSubmitEditing={onPressSignIn}
+            onChangeText={value => setPassword(value)}
+          />
+        </Item>
 
-          <Button block onPress={onPressSignIn} style={styles.button} >
-            <Text>SignIn</Text>
-          </Button>
-        </Form>
-      </Content>
-    </Container>
-  </Drawer>
-}
-
-SignIn.navigationOptions = {
-  title: 'Login'
+        <Button block onPress={onPressSignIn} style={styles.button} >
+          <Text>SignIn</Text>
+        </Button>
+      </Form>
+    </Content>
+  </Container>
 }
 
 const styles = StyleSheet.create({
@@ -69,8 +59,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export default hoistStatics(compose(
-  withNavigation,
+export default compose(
   withState('email', 'setEmail', ''),
   withState('password', 'setPassword', ''),
   withHandlers({
@@ -88,4 +77,4 @@ export default hoistStatics(compose(
       console.log('submit')
     }
   })
-))(SignIn)
+)(SignIn)
