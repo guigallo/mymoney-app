@@ -7,44 +7,18 @@ import { compose, withHandlers, hoistStatics } from 'recompose';
 import Header from '../components/layout/Header'
 import { signOut } from '../auth/withEmail'
 
+//onPress={() => navigation.navigate("Category")}
 const HomeScreen = ({onPressSignOut, navigation}) => {
   return <Container>
     <Header title={'Mymoney'} />
 
     <Content padder>
-      <Card>
-        <CardItem>
-          <Body>
-            <Text>Chat App to talk some awesome people!</Text>
-          </Body>
-        </CardItem>
-        <CardItem>
-          <Button
-            onPress={onPressSignOut}
-            full
-            primary
-          >
-            <Text>SignOut</Text>
-          </Button>
-        </CardItem>
-      </Card>
       <Button
+        onPress={onPressSignOut}
         full
-        rounded
-        dark
-        style={{ marginTop: 10 }}
-        onPress={() => navigation.navigate("Category")}
-      >
-        <Text>Chat With People</Text>
-      </Button>
-      <Button
-        full
-        rounded
         primary
-        style={{ marginTop: 10 }}
-        onPress={() => navigation.navigate("ProfileScreen")}
       >
-        <Text>Goto Profiles</Text>
+        <Text>SignOut</Text>
       </Button>
     </Content>
   </Container>
