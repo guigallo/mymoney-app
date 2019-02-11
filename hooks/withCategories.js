@@ -24,9 +24,9 @@ export default compose(
     }]
   }),
   connect(({ firestore }) => ({ categories: firestore.data.allCategories })),
-  withProps(({categories}) => ({
+  /*withProps(({categories}) => ({
     categories,
     isLoaded: isLoaded(categories),
     isEmpty: isEmpty(categories)
-  }))
+  }))*/
 )

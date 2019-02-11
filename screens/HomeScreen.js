@@ -1,14 +1,13 @@
 import React from 'react'
 import { StyleSheet, AsyncStorage } from 'react-native'
-import {
-  Container, Body, Content, Button, Card, CardItem, Text
-} from 'native-base'
-import { compose, withHandlers, hoistStatics } from 'recompose';
+import { compose, withHandlers, hoistStatics } from 'recompose'
 import Header from '../components/layout/Header'
 import { signOut } from '../auth/withEmail'
+import {
+  Container, Content, Button, Text
+} from 'native-base'
 
-//onPress={() => navigation.navigate("Category")}
-const HomeScreen = ({onPressSignOut, navigation}) => {
+const HomeScreen = ({onPressSignOut}) => {
   return <Container>
     <Header title={'Mymoney'} />
 

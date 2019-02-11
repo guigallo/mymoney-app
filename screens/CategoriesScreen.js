@@ -1,7 +1,7 @@
 import React from 'react'
-import { FlatList, Animated } from 'react-native'
+import { FlatList, Animated, TouchableOpacity } from 'react-native'
 import {
-  Container, Body, Content, Button, Card, CardItem, Text, List, ListItem
+  Container, Body, Content, Button, Card, CardItem, Text, List, ListItem, View, Left, Right, Icon
 } from 'native-base'
 import Header from '../components/layout/Header'
 import { signOut } from '../auth/withEmail'
@@ -14,11 +14,12 @@ import {
   lifecycle,
   withContext,
   getContext,
-  withState
+  withState,
+  hoistStatics
 } from 'recompose'
 import withCategories from '../hooks/withCategories';
 
-const CategoriesScreen = ({categories, search, setSearch}) => {
+const CategoriesScreen = ({categories, search, setSearch, navigation, onPressView, onPressEdit}) => {
   const categoriesList = []
   let message = ''
   !isLoaded(categories)
@@ -26,11 +27,10 @@ const CategoriesScreen = ({categories, search, setSearch}) => {
     : isEmpty(categories)
       ? message = 'Categories list is empty'
       : Object.keys(categories).map(
-          key => categoriesList.push({ ...categories[key], key}) )
+        key => categoriesList.push({ ...categories[key], key}) )
 
   return <Container>
-    <Header title={'Categories'} />
-
+    <Header title='Categories'/>
     <Content>
       {(!isLoaded(categories) || isEmpty(categories)) 
         ? <Text>{message}</Text>
@@ -39,7 +39,17 @@ const CategoriesScreen = ({categories, search, setSearch}) => {
           keyExtractor={item => item.key}
           renderItem={({item}) => (
             <ListItem>
-              <Text>{ item.name }</Text>
+              <Left>
+                <TouchableOpacity onPress={() => onPressView(item)}>
+                  <Text>{ item.name }</Text>
+                </TouchableOpacity>
+              </Left>
+
+              <Right>
+                <TouchableOpacity onPress={() => onPressEdit(item)}>
+                  <Icon name="arrow-forward" />
+                </TouchableOpacity>
+              </Right>
             </ListItem>
           )}
         />
@@ -64,4 +74,8 @@ export default compose(
     }]
   }),
   connect(({ firestore }) => ({ categories: firestore.data.allCategories })),
+  withHandlers({
+    onPressView: () => item => console.log('press left', item),
+    onPressEdit: ({navigation}) => item => navigation.navigate('Edit', {item}),
+  })
 )(CategoriesScreen)
