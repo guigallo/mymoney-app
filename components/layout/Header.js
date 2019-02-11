@@ -7,7 +7,7 @@ import {
   Header, Left, Body, Right, Button, Icon, Title
 } from 'native-base'
 
-CustomHeader = ({navigation, title, onPressBack, onPressMenu}) => {
+CustomHeader = ({navigation, title, onPressBack, onPressMenu, create = {show: false}}) => {
   return <>
     <View style={{height: Constants.statusBarHeight}} />
     <Header>
@@ -21,10 +21,18 @@ CustomHeader = ({navigation, title, onPressBack, onPressMenu}) => {
             </Button>
         }
       </Left>
+
       <Body>
         <Title>{title}</Title>
       </Body>
-      <Right />
+
+      <Right>
+        {create.show &&
+          <Button transparent >
+            <Icon name='plus' type='AntDesign' onPress={create.action}/>
+          </Button>
+        }
+      </Right>
     </Header>
   </>
 }
