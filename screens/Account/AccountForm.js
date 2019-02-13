@@ -1,13 +1,13 @@
 import React from 'react'
 import Form from '../../components/Form'
 
-const CategoryForm = () => 
+const AccountForm = () => 
   <Form
-    name='category'
-    collection='categories'
+    name='account'
+    collection='accounts'
     properties={[
       {id: 'name', name: 'Name', type: 'text', isRequired: true},
     ]}
   />
 
-export default CategoryForm
+export default AccountForm

@@ -6,15 +6,16 @@ firestore.settings({});
 /**
  * Save document
  */
-export const save = (user, collection, data, id = false) => {
-  const col = firestore.collection(collection);
-  const docToSave = id ? col.doc(id) : col.doc();
+export const save = (user, collection, data, id = false) => 
+  new Promise((resolve, reject) => {
+    const col = firestore.collection(collection);
+    const docToSave = id ? col.doc(id) : col.doc();
 
-  docToSave
-    .set({ ...data, author_id: user.uid })
-    .then(() => 'Saved with success')
-    .catch(err => console.log(err));
-}
+    docToSave
+      .set({ ...data, author_id: user.uid })
+      .then(() => resolve('Saved with success'))
+      .catch(err => reject(err));
+  })
 
 /**
  * Get all

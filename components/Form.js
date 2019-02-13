@@ -1,67 +1,107 @@
 import React from 'react'
+import { Container, Content, Form, Text, Button } from 'native-base'
+import { compose, withState, withHandlers, lifecycle } from 'recompose'
+import { connect } from 'react-redux'
 import { withNavigation } from 'react-navigation'
-import { TextInput, View } from 'react-native'
+import { save } from '../data/firestore'
 import Header from './layout/Header'
 import Input from './Input'
-import {
-  Container, Content, Form, Text, Body, Right, Button, Icon, Title, Item, Label
-} from 'native-base'
+import DatePicker from './DatePicker'
 
-export default CustomForm = ({properties}) => {
-  //console.log('properties', properties)
-  return  <Container>
-    <Header
-      title='Create Category'
-    />
+const CustomForm = ({type, name, properties, onChangeValue, values, errors, onPressSubmit}) => {
+  return <Container>
+    <Header title={`${type.capitalizeFirstLetter()} ${name}`} />
 
     <Content padder>
       <Form>
         {properties.map(property => {
-          console.log('prop312312323', property)
-          return <Item stackedLabel key={property.id}>
-            <Label>{property.name}</Label>
-            <Input property={property}/>
-          </Item>
+          if(property.type === 'date') {
+            let showDate
+            if(type === 'create') showDate = new Date()
+            if(type === 'update')
+              showDate = values[property.id] && values[property.id].constructor.name === 'Timestamp'
+                ? values[property.id].toDate()
+                : values[property.id]
+
+            return showDate && <DatePicker
+              key={property.id}
+              property={property}
+              showDate={showDate}
+              onChangeValue={onChangeValue}
+              error={errors[property.id]}
+            />
+          }
+          
+          return <Input
+              key={property.id}
+              property={property}
+              value={values[property.id]}
+              onChangeValue={onChangeValue}
+              items={property.items}
+              error={errors[property.id]}
+            />
         })}
 
-        <Button block style={{marginTop: 15}}>
-          <Text>Save</Text>
+        <Button block style={{marginTop: 15}} onPress={onPressSubmit}>
+          <Text>{type}</Text>
         </Button>
       </Form>
     </Content>
   </Container>
 }
-/*
-export const CustomInput = (property) => {
-  let Custom = <></>;
-  switch(property.type) {
-    case 'text':
-      console.log('text')
-      Custom = <Input value={property.value}/>; break;
-    case 'number':
-      Custom = <Input value={property.value} keyboardType='number-pad' />; break;
-    case 'picker':
-      Custom = <Picker
-        mode="dropdown"
-        iosIcon={<Icon name="arrow-down" />}
-        style={{ width: undefined }}
-        placeholder={property.name}
-        placeholderStyle={{ color: "#bfc6ea" }}
-        placeholderIconColor="#007aff"
-        //selectedValue={this.state.selected2}
-        //onValueChange={this.onValueChange2.bind(this)}
-      >
-        <Picker.Item label="Wallet" value="key0" />
-        <Picker.Item label="ATM Card" value="key1" />
-        <Picker.Item label="Debit Card" value="key2" />
-        <Picker.Item label="Credit Card" value="key3" />
-        <Picker.Item label="Net Banking" value="key4" />
-      </Picker>;
-      break;
-    case 'date': break;
-    default: console.log('Invalid type')
-  }
 
-  console.log('sdfasdf', Custom)
-  return <Custom/>
-}*/
+String.prototype.capitalizeFirstLetter = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
+}
+
+export default compose(
+  withNavigation,
+  connect(({ firebase: { auth } }) => ({ auth })),
+  withState('values', 'setValues', {}),
+  withState('errors', 'setErrors', {}),
+  withState('type', 'setType', ''),
+  lifecycle({
+    componentDidMount() {
+      const {
+        setType, setValues, collection, properties, navigation
+      } = this.props
+      if(!collection) return console.log('Collection is required')
+      if(!properties) return console.log('Properties is required')
+      if(properties.length < 1) return console.log('Properties must be an array')
+      
+      const paramType = navigation.getParam('type', {})
+      const paramValues = navigation.getParam('item', {})
+      setType(paramType)
+      setValues(paramValues)
+      
+      if(!paramType) return console.log('Type is required')
+      if(paramType === 'update' && !paramValues) return console.log('Actual values is required to update')
+    }
+  }),
+  withHandlers({
+    onChangeValue: ({values, setValues, errors, setErrors}) => (id, newValue) => {
+      if(errors[id]) {
+        let newErrors = errors
+        delete newErrors[id]
+        setErrors(newErrors)
+      }
+      let newState = values
+      newState[id] = newValue
+      setValues(newState)
+    },
+    onPressSubmit: ({values, properties, setErrors, auth, collection, navigation}) => () => {
+      let newErrors = {}
+      properties.forEach(property => {
+        if(property.isRequired && !values[property.id])
+          newErrors[property.id] = `${property.name} is required`
+      });
+
+      if(Object.entries(newErrors).length > 0) return setErrors(newErrors)
+
+      const key = values.key ? values.key : null
+      save(auth, collection, values, key)
+        .then(() => navigation.goBack())
+        .catch(err => console.log(err))
+    }
+  })
+)(CustomForm)

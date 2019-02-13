@@ -5,9 +5,8 @@ import { withNavigation } from 'react-navigation'
 import { isLoaded, isEmpty } from 'react-redux-firebase'
 import { compose, withHandlers } from 'recompose'
 import Header from '../components/layout/Header'
-import FAB from './layout/FAB'
 
-const CategoriesScreen = ({
+const ListCollection = ({
   list, name, collumns, onPressView, onPressEdit, onPressCreate
 }) => {
   const listToShow = []
@@ -21,7 +20,7 @@ const CategoriesScreen = ({
 
   return <Container>
     <Header
-      title='Categories'
+      title={name}
       create={{
         show: true,
         action: onPressCreate
@@ -54,8 +53,6 @@ const CategoriesScreen = ({
         />
       }
     </Content>
-
-    <FAB />
   </Container>
 }
 
@@ -63,7 +60,7 @@ export default compose(
   withNavigation,
   withHandlers({
     onPressView: () => item => console.log('press left', item),
-    onPressEdit: ({navigation}) => item => navigation.navigate('Edit', {item}),
+    onPressEdit: ({navigation}) => item => navigation.navigate('Form', {type: 'update', item}),
     onPressCreate: ({navigation}) => () => navigation.navigate('Form', {type: 'create'}),
   })
-)(CategoriesScreen)
+)(ListCollection)

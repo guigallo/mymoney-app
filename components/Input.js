@@ -1,64 +1,60 @@
 import React from 'react'
-import { compose } from 'recompose';
-import {
-  Container, Content, Form, Text, Body, Right, Button, Icon, Title, Item, Label, Input
-} from 'native-base'
+import { Text, Icon, Item, Label, Input, Picker, DatePicker } from 'native-base'
 
-const CustomInput = (property) => {
-  console.log('prop', property)
-
-  let FormatedInput
+const CustomInput = ({value, onChangeValue, property, error}) => {
   switch(property.type) {
     case 'text':
-      console.log('text')
-      FormatedInput = <Input value={property.value}/>; break;
-    case 'number':
-      FormatedInput = <Input value={property.value} keyboardType='number-pad' />; break;
-    case 'picker':
-      break;
-    case 'date': break;
-    default: console.log('Invalid type')
-  }
+      return <Item error={error ? true : false}>
+        <Label>{property.name}</Label>
+        <Input
+          value={value}
+          onChangeText={newValue => onChangeValue(property.id, newValue)}
+        />
+        {error && <Icon name='close-circle' />}
+      </Item>
 
-  console.log(FormatedInput)
-  return <FormatedInput />
+    case 'number':
+      return <Item error={error ? true : false}>
+        <Label>{property.name}</Label>
+        <Input
+          value={value}
+          keyboardType='number-pad'
+          onChangeText={newValue => onChangeValue(property.id, newValue)}
+        />
+        {error && <Icon name='close-circle' />}
+      </Item>
+
+    case 'picker':
+      return !property.items
+        ? <Text>Items are required for picker</Text>
+        : <Item error={error ? true : false}>
+          <Label>{property.name}</Label>
+          <Picker
+            note
+            mode="dropdown"
+            style={{ width: undefined }}
+
+            placeholder={property.name}
+            placeholderStyle={{ color: "#d3d3d3" }}
+            placeholderIconColor="#007aff"
+
+            iosHeader={property.name}
+            iosIcon={<Icon name="arrow-dropdown-circle" style={{ color: "#007aff", fontSize: 25 }} />}
+
+            selectedValue={value}
+            onValueChange={newValue => onChangeValue(property.id, newValue)}
+          >
+            <Picker.Item label='Select an item' value={null} />
+            {property.items.map(item => <Picker.Item key={item.id} label={item.value} value={item.id} />)}
+          </Picker>
+          {error && <Icon name='close-circle' />}
+        </Item>
+
+    default:
+      return <Item>
+        <Text>Invalid Type</Text>
+      </Item>
+  }
 }
 
-export default compose(
-
-)(CustomInput)
-
-
-export const CustomInput2 = (property) => {
-  let Custom = <></>;
-  switch(property.type) {
-    case 'text':
-      console.log('text')
-      Custom = <Input value={property.value}/>; break;
-    case 'number':
-      Custom = <Input value={property.value} keyboardType='number-pad' />; break;
-    case 'picker':
-      Custom = <Picker
-        mode="dropdown"
-        iosIcon={<Icon name="arrow-down" />}
-        style={{ width: undefined }}
-        placeholder={property.name}
-        placeholderStyle={{ color: "#bfc6ea" }}
-        placeholderIconColor="#007aff"
-        //selectedValue={this.state.selected2}
-        //onValueChange={this.onValueChange2.bind(this)}
-      >
-        <Picker.Item label="Wallet" value="key0" />
-        <Picker.Item label="ATM Card" value="key1" />
-        <Picker.Item label="Debit Card" value="key2" />
-        <Picker.Item label="Credit Card" value="key3" />
-        <Picker.Item label="Net Banking" value="key4" />
-      </Picker>;
-      break;
-    case 'date': break;
-    default: console.log('Invalid type')
-  }
-
-  console.log('sdfasdf', Custom)
-  return <Custom/>
-}
+export default CustomInput
