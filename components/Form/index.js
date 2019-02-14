@@ -3,10 +3,9 @@ import { Container, Content, Form, Text, Button } from 'native-base'
 import { compose, withState, withHandlers, lifecycle } from 'recompose'
 import { connect } from 'react-redux'
 import { withNavigation } from 'react-navigation'
-import { save } from '../data/firestore'
-import Header from './layout/Header'
-import Input from './Input'
-import DatePicker from './DatePicker'
+import { save } from '../../data/firestore'
+import Header from '../layout/Header'
+import MasterInput from './MasterInput'
 
 const CustomForm = ({type, name, properties, onChangeValue, values, errors, onPressSubmit}) => {
   return <Container>
@@ -15,30 +14,24 @@ const CustomForm = ({type, name, properties, onChangeValue, values, errors, onPr
     <Content padder>
       <Form>
         {properties.map(property => {
-          if(property.type === 'date') {
-            let showDate
-            if(type === 'create') showDate = new Date()
-            if(type === 'update')
-              showDate = values[property.id] && values[property.id].constructor.name === 'Timestamp'
-                ? values[property.id].toDate()
-                : values[property.id]
-
-            return showDate && <DatePicker
-              key={property.id}
-              property={property}
-              showDate={showDate}
-              onChangeValue={onChangeValue}
-              error={errors[property.id]}
-            />
-          }
+          let fieldProps = {}
+          if(property.type === 'date')
+            fieldProps = { 
+              showDate: type === 'create'
+                ? new Date()
+                : values[property.id] && values[property.id].constructor.name === 'Timestamp'
+                  ? values[property.id].toDate()
+                  : values[property.id]
+            }
           
-          return <Input
+          return <MasterInput
               key={property.id}
               property={property}
               value={values[property.id]}
               onChangeValue={onChangeValue}
-              items={property.items}
               error={errors[property.id]}
+              
+              {...fieldProps}
             />
         })}
 
@@ -62,6 +55,9 @@ export default compose(
   withState('type', 'setType', ''),
   lifecycle({
     componentDidMount() {
+      /**
+       * set default value
+       */
       const {
         setType, setValues, collection, properties, navigation
       } = this.props

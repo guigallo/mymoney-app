@@ -1,8 +1,9 @@
 import React from 'react'
-import { Text, Icon, Item, Label, DatePicker } from 'native-base'
+import { Text, Icon, Item, Label, DatePicker, Container, Content } from 'native-base'
 
-const CustomDatePicker = ({error, property, showDate, onChangeValue}) => {
-  return <Item error={error ? true : false}>
+const CustomDatePicker = ({error, value, property, showDate, onChangeValue}) => {
+  if(!value) onChangeValue(property.id, new Date())
+  return <Item error={error ? true : false} fixedLabel style={{height:50}}>
     <Label>{property.name}</Label>
     <DatePicker
       defaultDate={showDate}
@@ -19,9 +20,6 @@ const CustomDatePicker = ({error, property, showDate, onChangeValue}) => {
       disabled={false}
     />
     {error && <Icon name='close-circle' />}
-    <Text>
-      Date: {showDate && showDate.toString().substr(4, 12)}
-    </Text>
   </Item>
 }
 

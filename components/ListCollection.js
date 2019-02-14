@@ -38,7 +38,7 @@ const ListCollection = ({
               <Left>
                 <TouchableOpacity onPress={() => onPressView(item)}>
                   {collumns.map(collumn =>
-                    <Text key={item.key}>{ item[collumn] }</Text>
+                    <Text key={collumn}>{ item[collumn] }</Text>
                   )}
                 </TouchableOpacity>
               </Left>
