@@ -1,7 +1,7 @@
 import React from 'react'
 import { compose } from 'recompose'
 import { isLoaded, isEmpty } from 'react-redux-firebase'
-import { Text, Icon, Item, Label, Input, Picker, DatePicker, Switch } from 'native-base'
+import { Icon, Item, Picker } from 'native-base'
 import { Platform } from 'react-native'
 
 const PickerRelate = ({relate, error, property, onChangeValue, value, showProp}) => {

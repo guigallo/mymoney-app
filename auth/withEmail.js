@@ -1,6 +1,6 @@
 import { fireapp as firebase } from '../config/firebase'
 
-export const signIn = (email, password) =>
+export const signIn = ({email, password}) =>
   new Promise((resolve, reject) =>
   firebase.auth().signInWithEmailAndPassword(email, password)
     .then(user => resolve(user))

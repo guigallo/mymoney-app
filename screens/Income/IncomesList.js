@@ -3,14 +3,14 @@ import ListCollection from '../../components/ListCollection'
 import { compose } from 'recompose';
 import withCollection from '../../hooks/withCollection';
 
-const ExpensesList = ({expenses}) => {
+const IncomesList = ({incomes}) => {
   return <ListCollection
-    name={'expenses'}
-    list={expenses}
+    name={'incomes'}
+    list={incomes}
     collumns={['description', 'value']}
   />
 }
 
 export default compose(
-  withCollection('expenses'),
-)(ExpensesList)
+  withCollection('incomes'),
+)(IncomesList)

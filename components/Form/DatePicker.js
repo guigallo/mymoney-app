@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, Icon, Item, Label, DatePicker, Container, Content } from 'native-base'
+import { Icon, Item, Label, DatePicker } from 'native-base'
 
 const CustomDatePicker = ({error, value, property, showDate, onChangeValue}) => {
   if(!value) onChangeValue(property.id, new Date())

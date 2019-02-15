@@ -2,16 +2,16 @@ import React from 'react'
 import { withNavigation } from 'react-navigation'
 import { StyleSheet, AsyncStorage } from 'react-native'
 import {
-  Container, Header, Content, Form, Item, Input, Label, Icon, Button, Text, Card, CardItem, Body, Drawer,
+  Container, Content, Form, Item, Input, Label, Icon, Button, Text, 
 } from 'native-base';
 import { signIn } from '../auth/withEmail'
-import { compose, withProps, withState, withHandlers, hoistStatics } from 'recompose'
+import { compose, withState, withHandlers, hoistStatics, lifecycle } from 'recompose'
 
-const SignIn = ({email, password, onPressSignIn, setEmail, setPassword}) => {
-  return <Container style={styles.container}>
+const SignInScreen = ({onPressSignIn, values, errors, onChangeValue}) => 
+  <Container style={styles.container}>
     <Content padder>
       <Form>
-        <Item floatingLabel>
+        <Item stackedLabel error={errors.email}>
           <Icon active type='MaterialIcons' name='email' />
           <Label>Username</Label>
           <Input
@@ -23,11 +23,12 @@ const SignIn = ({email, password, onPressSignIn, setEmail, setPassword}) => {
             keyboardType='email-address'
 
             onSubmitEditing={() => this.passwordInput._root.focus()}
-            onChangeText={value => setEmail(value)}
+            value={values.email}
+            onChangeText={value => onChangeValue('email', value)}
           />
         </Item>
 
-        <Item floatingLabel last>
+        <Item stackedLabel last error={errors.password}>
           <Icon active type='MaterialIcons' name='lock' />
           <Label>Password</Label>
           <Input
@@ -38,9 +39,12 @@ const SignIn = ({email, password, onPressSignIn, setEmail, setPassword}) => {
             secureTextEntry={true}
 
             onSubmitEditing={onPressSignIn}
-            onChangeText={value => setPassword(value)}
+            value={values.password}
+            onChangeText={value => onChangeValue('password', value)}
           />
         </Item>
+
+        {(errors.email || errors.password) && <Text>{errors.message}</Text>}
 
         <Button block onPress={onPressSignIn} style={styles.button} >
           <Text>SignIn</Text>
@@ -48,7 +52,6 @@ const SignIn = ({email, password, onPressSignIn, setEmail, setPassword}) => {
       </Form>
     </Content>
   </Container>
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -59,22 +62,49 @@ const styles = StyleSheet.create({
   }
 })
 
-export default compose(
-  withState('email', 'setEmail', ''),
-  withState('password', 'setPassword', ''),
+const defaultValues = {
+  email: '', password: ''
+}
+
+const defaultErrors = {
+  email: false,
+  password: false,
+  message: '',
+}
+
+SignInScreen.navigationOptions = {
+  title: 'SignIn',
+};
+
+export default hoistStatics(compose(
+  withNavigation,
+  withState('values', 'setValues', defaultValues),
+  withState('errors', 'setErrors', defaultErrors),
+  lifecycle({
+    componentWillUnmount() {
+      const {setValues, setErrors} = this.props
+      setValues(defaultValues)
+      setErrors(defaultErrors)
+    }
+  }),
   withHandlers({
-    onPressSignIn: ({navigation, email, password}) => () => {
-      signIn(email, password)
+    onChangeValue: ({setValues, setErrors}) => (field, newValue) => {
+      let newValues = defaultValues
+      newValues[field] = newValue
+      setValues(newValues)
+      setErrors(defaultErrors)
+    },
+    onPressSignIn: ({ navigation, values, setErrors }) => () => {
+      signIn({...values})
         .then(async result => {
           await AsyncStorage.setItem('authUser', JSON.stringify(result.user))
-          navigation.navigate('Dashboard')
+          navigation.navigate('Home')
         })
-        .catch(err => console.warn(err))
-
-        //[Error: The email address is badly formatted.]
-        //[Error: There is no user record corresponding to this identifier. The user may have been deleted.]
-        //[Error: The password is invalid or the user does not have a password.]
-      console.log('submit')
+        .catch(({ code, message }) => setErrors({
+          message,
+          email: code === 'auth/invalid-email' || code === 'auth/user-not-found' ? true : false,
+          password: code === 'auth/wrong-password' ? true : false
+        }))
     }
   })
-)(SignIn)
+))(SignInScreen)

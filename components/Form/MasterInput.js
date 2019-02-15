@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, Icon, Item, Label, Input, Picker } from 'native-base'
+import { Text, Icon, Item, Picker } from 'native-base'
 import FormItem from './FormItem'
 import TextInput from './TextInput'
 import Switch from './Switch'

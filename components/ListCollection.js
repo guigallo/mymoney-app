@@ -27,7 +27,7 @@ const ListCollection = ({
       }}
     />
 
-    <Content>
+    <Content padder>
       {(!isLoaded(list) || isEmpty(list)) 
         ? <Text>{message}</Text>
         : <Animated.FlatList
