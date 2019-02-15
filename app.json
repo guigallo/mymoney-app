@@ -23,7 +23,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.guigallo.mymoney"
+    },
+    "android": {
+      "package": "com.guigallo.mymoney"
     }
   }
 }
