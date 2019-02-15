@@ -80,13 +80,6 @@ export default hoistStatics(compose(
   withNavigation,
   withState('values', 'setValues', defaultValues),
   withState('errors', 'setErrors', defaultErrors),
-  lifecycle({
-    componentWillUnmount() {
-      const {setValues, setErrors} = this.props
-      setValues(defaultValues)
-      setErrors(defaultErrors)
-    }
-  }),
   withHandlers({
     onChangeValue: ({setValues, setErrors}) => (field, newValue) => {
       let newValues = defaultValues
