@@ -15,19 +15,24 @@ const CustomForm = ({type, name, properties, onChangeValue, values, errors, onPr
       <Form>
         {properties.map(property => {
           let fieldProps = {}
-          if(property.type === 'date')
-            fieldProps = { 
-              showDate: type === 'create'
-                ? new Date()
-                : values[property.id] && values[property.id].constructor.name === 'Timestamp'
+          let value = values[property.id]
+          /*
+          if(property.type === 'date') {
+            if(type === 'create') fieldProps = {showDate: new Date()}
+            if(type === 'update') {
+              !values[property.id] && (fieldProps = {showDate: new Date()})
+              fieldProps = { 
+                showDate: values[property.id] && values[property.id].constructor.name === 'Timestamp'
                   ? values[property.id].toDate()
                   : values[property.id]
+              }
             }
-          
+          }*/
+          if(property.type === 'number' && values[property.id]) value = values[property.id].toString()
           return <MasterInput
               key={property.id}
               property={property}
-              value={values[property.id]}
+              value={value}
               onChangeValue={onChangeValue}
               error={errors[property.id]}
               
