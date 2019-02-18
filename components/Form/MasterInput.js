@@ -27,15 +27,17 @@ const MasterInput = ({
       />
 
     case 'date':
-      return showDate 
-        ? <DatePicker
+      if(value) {
+        console.log('v', value)
+        console.log('t', value.constructor.name === 'Timestamp')
+      }
+      if(!value) onChangeValue(property.id, new Date())
+      return <DatePicker
           property={property}
-          showDate={showDate} //date
           onChangeValue={onChangeValue}
           error={error}
           value={value}
         />
-        : <></>
 
     case 'boolean':
       return <Switch

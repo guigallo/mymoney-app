@@ -3,7 +3,6 @@ import { AsyncStorage } from 'react-native'
 import { compose, withState, lifecycle } from 'recompose'
 import { withNavigation } from 'react-navigation'
 import { Font } from 'expo'
-import { View, Text } from 'react-native';
 
 loadFonts = new Promise(async resolve => {
   await Font.loadAsync({
@@ -18,12 +17,7 @@ loadFonts = new Promise(async resolve => {
 loadUser = new Promise(resolve => 
   AsyncStorage.getItem('authUser').then(user => resolve(user)) )
 
-const LoadScreen = () =>
-  <View style={{
-    flex:1, justifyContent: 'center', alignItems: 'center'}
-  }>
-    <Text>Loading</Text>
-  </View>
+const LoadScreen = () => <></>
 
 export default compose(
   withNavigation,
