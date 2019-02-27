@@ -7,7 +7,9 @@ import { save } from '../../data/firestore'
 import Header from '../layout/Header'
 import MasterInput from './MasterInput'
 
-const CustomForm = ({type, name, properties, onChangeValue, values, errors, onPressSubmit}) => {
+const CustomForm = ({
+  type, name, properties, onChangeValue, values, errors, onPressSubmit
+}) => {
   return <Container>
     <Header title={`${type.capitalizeFirstLetter()} ${name}`} />
 
@@ -16,20 +18,9 @@ const CustomForm = ({type, name, properties, onChangeValue, values, errors, onPr
         {properties.map(property => {
           let fieldProps = {}
           let value = values[property.id]
-          /*
-          if(property.type === 'date') {
-            if(type === 'create') fieldProps = {showDate: new Date()}
-            if(type === 'update') {
-              !values[property.id] && (fieldProps = {showDate: new Date()})
-              fieldProps = { 
-                showDate: values[property.id] && values[property.id].constructor.name === 'Timestamp'
-                  ? values[property.id].toDate()
-                  : values[property.id]
-              }
-            }
-          }*/
+          
           if(property.type === 'number' && values[property.id]) value = values[property.id].toString()
-          return <MasterInput
+          return value !== undefined && <MasterInput
               key={property.id}
               property={property}
               value={value}
@@ -52,17 +43,23 @@ String.prototype.capitalizeFirstLetter = function() {
   return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
 }
 
+const createValues = properties => {
+  const values = {}
+  properties.forEach(property => {
+    values[property.id] = property.defaultValue
+  })
+  return values
+}
+
 export default compose(
   withNavigation,
   connect(({ firebase: { auth } }) => ({ auth })),
+  withState('isReady', 'setIsReady', false),
   withState('values', 'setValues', {}),
   withState('errors', 'setErrors', {}),
   withState('type', 'setType', ''),
   lifecycle({
     componentDidMount() {
-      /**
-       * set default value
-       */
       const {
         setType, setValues, collection, properties, navigation
       } = this.props
@@ -71,9 +68,8 @@ export default compose(
       if(properties.length < 1) return console.log('Properties must be an array')
       
       const paramType = navigation.getParam('type', {})
-      const paramValues = navigation.getParam('item', {})
       setType(paramType)
-      setValues(paramValues)
+      setValues(navigation.getParam('item', false) || createValues(properties))
       
       if(!paramType) return console.log('Type is required')
       if(paramType === 'update' && !paramValues) return console.log('Actual values is required to update')
