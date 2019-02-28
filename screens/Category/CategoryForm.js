@@ -6,7 +6,7 @@ const CategoryForm = () =>
     name='category'
     collection='categories'
     properties={[
-      {id: 'name', name: 'Name', type: 'text', isRequired: true},
+      {id: 'name', name: 'Name', type: 'text', isRequired: true, defaultValue: ''},
     ]}
   />
 

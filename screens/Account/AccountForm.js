@@ -6,7 +6,7 @@ const AccountForm = () =>
     name='account'
     collection='accounts'
     properties={[
-      {id: 'name', name: 'Name', type: 'text', isRequired: true},
+      {id: 'name', name: 'Name', type: 'text', isRequired: true, defaultValue: ''},
     ]}
   />
 
