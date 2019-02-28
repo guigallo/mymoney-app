@@ -2,8 +2,8 @@ import React from 'react'
 import { Text, Icon, Item, Picker } from 'native-base'
 import { Platform } from 'react-native'
 
-const CustomPicker = ({showProp, item, input, items}) => items
-  ? <Item {...item}>
+const CustomPicker = ({showProp, item, input, items, id}) => items
+  ? <Item error={Boolean(item.error)}>
     <Picker
       note
       mode="dropdown"

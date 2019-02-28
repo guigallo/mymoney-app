@@ -9,6 +9,7 @@ import PickerRelate from './PickerRelate'
 const MasterInput = ({ value, onChangeValue, property, error }) => {
   const onChange = newValue => onChangeValue(property.id, newValue)
   const inputProps = {
+    id: property.id,
     item:{ error, label: property.name },
     input:{ value },
   }

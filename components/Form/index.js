@@ -60,39 +60,39 @@ export default compose(
   withState('type', 'setType', ''),
   lifecycle({
     componentDidMount() {
-      const {
-        setType, setValues, collection, properties, navigation
-      } = this.props
+      const { setType, setValues, collection, properties, navigation } = this.props
+      const paramType = navigation.getParam('type', {})
+      if(!paramType) return console.log('Type is required')
       if(!collection) return console.log('Collection is required')
       if(!properties) return console.log('Properties is required')
       if(properties.length < 1) return console.log('Properties must be an array')
       
-      const paramType = navigation.getParam('type', {})
       setType(paramType)
       setValues(navigation.getParam('item', false) || createValues(properties))
-      
-      if(!paramType) return console.log('Type is required')
-      if(paramType === 'update' && !paramValues) return console.log('Actual values is required to update')
     }
   }),
   withHandlers({
-    onChangeValue: ({values, setValues, errors, setErrors}) => (id, newValue) => {
+    onChangeValue: ({values, setValues, errors, setErrors, properties}) => (id, newValue) => {
       if(errors[id]) {
         let newErrors = errors
         delete newErrors[id]
         setErrors(newErrors)
       }
+      model = properties.find(prop => prop.id === id)
       let newState = values
-      newState[id] = newValue
+      newState[id] = model.type === 'number' ? parseFloat(newValue) : newValue
       setValues(newState)
     },
     onPressSubmit: ({values, properties, setErrors, auth, collection, navigation}) => () => {
+      console.log(values)
       let newErrors = {}
       properties.forEach(property => {
+        if(property.type === 'boolean') return
         if(property.isRequired && !values[property.id])
           newErrors[property.id] = `${property.name} is required`
       });
 
+      console.log('err', newErrors)
       if(Object.entries(newErrors).length > 0) return setErrors(newErrors)
 
       const key = values.key ? values.key : null

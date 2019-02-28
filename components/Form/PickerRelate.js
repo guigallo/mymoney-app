@@ -3,7 +3,7 @@ import { isLoaded, isEmpty } from 'react-redux-firebase'
 import { Item, Text } from 'native-base'
 import CustomPicker from './Picker'
 
-const PickerRelate = ({relate, showProp, item, input}) => {
+const PickerRelate = ({id, relate, showProp, item, input}) => {
   let list = []
   let message =
     ! isLoaded(relate) ? `Loading ${item.label}`
@@ -11,7 +11,7 @@ const PickerRelate = ({relate, showProp, item, input}) => {
     : Object.keys(relate).map(id => list.push({ ...relate[id], id}))
 
   return isLoaded(relate) && list.length > 0
-    ? <CustomPicker showProp={showProp} item={item} input={input} items={list}/>
+    ? <CustomPicker id={id} showProp={showProp} item={item} input={input} items={list}/>
     : <Item>
       <Text>{message}</Text>
     </Item>
