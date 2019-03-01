@@ -1,13 +1,14 @@
 import React from 'react'
 import { Animated, TouchableOpacity } from 'react-native'
-import { Container, Content, Text, ListItem, Left, Right, Icon } from 'native-base'
+import { Container, Content, Text, ListItem } from 'native-base'
 import { withNavigation } from 'react-navigation'
 import { isLoaded, isEmpty } from 'react-redux-firebase'
 import { compose, withHandlers } from 'recompose'
 import Header from '../components/layout/Header'
+import Separator from './Separator'
 
 const ListCollection = ({
-  list, name, collumns, onPressView, onPressEdit, onPressCreate
+  list, name, collumns, onPressItem, onPressCreate, RenderItem
 }) => {
   const listToShow = []
   let message = ''
@@ -33,22 +34,14 @@ const ListCollection = ({
         : <Animated.FlatList
           data={listToShow}
           keyExtractor={item => item.key}
+          ItemSeparatorComponent={() => <Separator/>}
           renderItem={({item}) => (
-            <ListItem>
-              <Left>
-                <TouchableOpacity onPress={() => onPressView(item)}>
-                  {collumns.map(collumn =>
-                    <Text key={collumn}>{ item[collumn] }</Text>
-                  )}
-                </TouchableOpacity>
-              </Left>
-
-              <Right>
-                <TouchableOpacity onPress={() => onPressEdit(item)}>
-                  <Icon name="arrow-forward" />
-                </TouchableOpacity>
-              </Right>
-            </ListItem>
+            item.hasOwnProperty(collumns[0]) && <TouchableOpacity
+              style={{flex:1, marginLeft: "2%", padding: 15}}
+              onPress={() => onPressItem(item)}
+            >
+              <RenderItem collumns={collumns} item={item}/>
+            </TouchableOpacity>
           )}
         />
       }
@@ -59,8 +52,7 @@ const ListCollection = ({
 export default compose(
   withNavigation,
   withHandlers({
-    onPressView: () => item => console.log('press left', item),
-    onPressEdit: ({navigation}) => item => navigation.navigate('Form', {type: 'update', item}),
+    onPressItem: ({navigation}) => item => navigation.navigate('Form', {type: 'update', item}),
     onPressCreate: ({navigation}) => () => navigation.navigate('Form', {type: 'create'}),
   })
 )(ListCollection)

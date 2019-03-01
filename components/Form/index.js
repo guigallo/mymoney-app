@@ -1,47 +1,10 @@
 import React from 'react'
-import { Container, Content, Form, Text, Button } from 'native-base'
+import { Alert } from 'react-native'
 import { compose, withState, withHandlers, lifecycle } from 'recompose'
 import { connect } from 'react-redux'
 import { withNavigation } from 'react-navigation'
-import { save } from '../../data/firestore'
-import Header from '../layout/Header'
-import MasterInput from './MasterInput'
-
-const CustomForm = ({
-  type, name, properties, onChangeValue, values, errors, onPressSubmit
-}) => {
-  return <Container>
-    <Header title={`${type.capitalizeFirstLetter()} ${name}`} />
-
-    <Content padder>
-      <Form>
-        {properties.map(property => {
-          let fieldProps = {}
-          let value = values[property.id]
-          
-          if(property.type === 'number' && values[property.id]) value = values[property.id].toString()
-          return value !== undefined && <MasterInput
-              key={property.id}
-              property={property}
-              value={value}
-              onChangeValue={onChangeValue}
-              error={errors[property.id]}
-              
-              {...fieldProps}
-            />
-        })}
-
-        <Button block style={{marginTop: 15}} onPress={onPressSubmit}>
-          <Text>{type}</Text>
-        </Button>
-      </Form>
-    </Content>
-  </Container>
-}
-
-String.prototype.capitalizeFirstLetter = function() {
-  return this.charAt(0).toUpperCase() + this.slice(1).toLowerCase();
-}
+import { save, deleteById } from '../../data/firestore'
+import Form from './Form'
 
 const createValues = properties => {
   const values = {}
@@ -84,7 +47,6 @@ export default compose(
       setValues(newState)
     },
     onPressSubmit: ({values, properties, setErrors, auth, collection, navigation}) => () => {
-      console.log(values)
       let newErrors = {}
       properties.forEach(property => {
         if(property.type === 'boolean') return
@@ -92,13 +54,23 @@ export default compose(
           newErrors[property.id] = `${property.name} is required`
       });
 
-      console.log('err', newErrors)
       if(Object.entries(newErrors).length > 0) return setErrors(newErrors)
 
       const key = values.key ? values.key : null
       save(auth, collection, values, key)
         .then(() => navigation.goBack())
         .catch(err => console.log(err))
+    },
+    onPressRemove: ({name, collection, values, navigation}) => () => {
+      Alert.alert(
+        `Confirm to delete ${name}`,
+        'You cannot undo this action',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Confirm', style: 'destructive', onPress: () => deleteById(collection, values.key).then(() => navigation.pop(2)) }
+        ],
+        {cancelable: true}
+      )
     }
   })
-)(CustomForm)
+)(props => <Form {...props}/>)
